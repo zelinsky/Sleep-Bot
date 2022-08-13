@@ -6,6 +6,12 @@ use serenity::{
     prelude::*,
 };
 
+use tokio::time;
+
+use std::time::Duration;
+
+use tokio::task;
+
 const SLEEP_COMMAND: &str = "!sleep";
 
 struct Handler;
@@ -38,7 +44,7 @@ impl EventHandler for Handler {
                 eprintln!("Error sending message: {:?}", why);
             }
         }
-        if let Some((command, time)) = msg.content.split_once(" ") {
+        if let Some((command, time_to_wait)) = msg.content.split_once(" ") {
             if command == SLEEP_COMMAND {
                 /*
                 match time.trim().parse() {
@@ -47,12 +53,12 @@ impl EventHandler for Handler {
 
                 }*/
 
-                if let Ok(time) = time.trim().parse::<u32>() {
+                if let Ok(time_to_wait) = time_to_wait.trim().parse::<u64>() {
                     if let Err(why) = msg
                         .channel_id
                         .say(
                             &ctx.http,
-                            format!("You will be disconnected in {} minutes!", time),
+                            format!("You will be disconnected in {} minutes!", time_to_wait),
                         )
                         .await
                     {
@@ -60,10 +66,15 @@ impl EventHandler for Handler {
                     }
 
                     match msg.member(&ctx.http).await {
-                        Ok(member) => match member.disconnect_from_voice(&ctx.http).await {
-                            Ok(_) => (),
-                            Err(why) => eprintln!("Error disconnecting user: {:?}", why),
-                        },
+                        Ok(member) => {
+                            task::spawn(async move {
+                                time::sleep(Duration::from_secs(time_to_wait * 60)).await;
+                                match member.disconnect_from_voice(&ctx.http).await {
+                                    Ok(_) => (),
+                                    Err(why) => eprintln!("Error disconnecting user: {:?}", why),
+                                }
+                            });
+                        }
                         Err(why) => eprintln!("Error retrieving member: {:?}", why),
                     };
                 } else {

@@ -20,5 +20,7 @@ features = [
 version = "1.20.1"
 features = [
 	"macros",
-	"rt-multi-thread"
+	"rt-multi-thread",
+	"rt",
+	"time"
 ]

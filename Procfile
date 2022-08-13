@@ -1,1 +1,1 @@
-web: ./target/release/discord-sleep-bot
+worker: ./target/release/discord-sleep-bot
