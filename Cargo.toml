@@ -1,0 +1,24 @@
+[package]
+name = "discord-sleep-bot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+
+[dependencies.serenity]
+version = "0.11"
+default-features = false
+features = [
+	"client",
+	"gateway",
+	"model",
+	"rustls_backend"
+]
+
+[dependencies.tokio]
+version = "1.20.1"
+features = [
+	"macros",
+	"rt-multi-thread"
+]
