@@ -32,7 +32,7 @@ impl EventHandler for Handler {
             }
         }
 
-        if msg.content.to_lowercase() == "share the sympathy" {
+        if msg.content.to_lowercase() == "spare the sympathy" {
             if let Err(why) = msg
                 .channel_id
                 .say(
