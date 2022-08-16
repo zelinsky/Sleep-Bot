@@ -135,6 +135,7 @@ name = "discord-sleep-bot"
 version = "0.1.0"
 dependencies = [
  "serenity",
+ "syllable",
  "tokio",
 ]
 
@@ -800,6 +801,12 @@ name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
+
+[[package]]
+name = "syllable"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7be6e771f4c80d20cb91b6d35f0109a762e630cc6da42a793b2f58dae917d200"
 
 [[package]]
 name = "syn"

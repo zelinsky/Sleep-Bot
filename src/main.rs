@@ -12,6 +12,8 @@ use std::time::Duration;
 
 use tokio::task;
 
+use syllable;
+
 const SLEEP_COMMAND: &str = "!sleep";
 
 struct Handler;
@@ -19,31 +21,30 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.content.to_lowercase() == "oh the misery" {
-            if let Err(why) = msg
-                .channel_id
-                .say(
-                    &ctx.http,
-                    "https://tenor.com/view/everybody-wants-to-be-my-gif-25137901",
-                )
-                .await
+        let mut syllable_counter = syllable::Counter::new();
+        let mut num_syllables = 0;
+        for word in msg.content.split_whitespace() {
+            num_syllables += syllable_counter.count(&word);
+        }
+        if num_syllables == 5 {
+            if msg.content.ends_with("y")
+                || msg.content.ends_with("ee")
+                || msg.content.ends_with("ie")
             {
-                eprintln!("Error sending message: {:?}", why);
+                if let Err(why) = msg
+                    .channel_id
+                    .say(
+                        &ctx.http,
+                        "https://tenor.com/view/everybody-wants-to-be-my-gif-25137901",
+                    )
+                    .await
+                {
+                    eprintln!("Error sending message: {:?}", why);
+                }
             }
         }
 
-        if msg.content.to_lowercase() == "spare the sympathy" {
-            if let Err(why) = msg
-                .channel_id
-                .say(
-                    &ctx.http,
-                    "https://tenor.com/view/everybody-wants-to-be-my-gif-25137901",
-                )
-                .await
-            {
-                eprintln!("Error sending message: {:?}", why);
-            }
-        }
+        // TODO: Handle just !sleep
         if let Some((command, time_to_wait)) = msg.content.split_once(" ") {
             if command == SLEEP_COMMAND {
                 /*
