@@ -46,7 +46,6 @@ impl EventHandler for Handler {
             }
         }
 
-        // TODO: Handle just !sleep
         if let Some((command, time_to_wait)) = msg.content.split_once(" ") {
             if command == SLEEP_COMMAND {
                 /*
@@ -92,6 +91,17 @@ impl EventHandler for Handler {
                         eprintln!("Error sending message: {:?}", why);
                     }
                 }
+            }
+        } else if msg.content == "!sleep" {
+            if let Err(why) = msg
+                .channel_id
+                .say(
+                    &ctx.http,
+                    "Please specify a valid time in minutes e.g. !sleep 15",
+                )
+                .await
+            {
+                eprintln!("Error sending message: {:?}", why);
             }
         }
     }
