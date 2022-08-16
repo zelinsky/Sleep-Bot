@@ -30,6 +30,8 @@ impl EventHandler for Handler {
             if msg.content.ends_with("y")
                 || msg.content.ends_with("ee")
                 || msg.content.ends_with("ie")
+                || msg.content.ends_with(" me")
+                || msg.content.ends_with(" be")
             {
                 if let Err(why) = msg
                     .channel_id
