@@ -112,6 +112,7 @@ impl EventHandler for Handler {
 }
 
 fn string_ends_with_any(s: &str, suffixes: &[&str]) -> bool {
+    let s = s.to_lowercase();
     return suffixes.iter().any(|&suffix| s.ends_with(suffix));
 }
 
