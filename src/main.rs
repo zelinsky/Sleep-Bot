@@ -15,6 +15,9 @@ use tokio::task;
 use syllable;
 
 const SLEEP_COMMAND: &str = "!sleep";
+const SUFFIXES: [&str; 15] = [
+    "y", "ee", "ie", " me", " be", " he", " c", " b", " d", " e", " g", " p", " t", " v", " z",
+];
 
 struct Handler;
 
@@ -23,26 +26,23 @@ impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
         let mut syllable_counter = syllable::Counter::new();
         let mut num_syllables = 0;
-        for word in msg.content.split_whitespace() {
+        for word in msg
+            .content
+            .replace(&['(', ')', ',', '\"', '.', ';', ':', '\''][..], "")
+            .split_whitespace()
+        {
             num_syllables += syllable_counter.count(&word);
         }
-        if num_syllables == 5 {
-            if msg.content.ends_with("y")
-                || msg.content.ends_with("ee")
-                || msg.content.ends_with("ie")
-                || msg.content.ends_with(" me")
-                || msg.content.ends_with(" be")
+        if num_syllables == 5 && string_ends_with_any(&msg.content, &SUFFIXES) {
+            if let Err(why) = msg
+                .channel_id
+                .say(
+                    &ctx.http,
+                    "https://tenor.com/view/everybody-wants-to-be-my-gif-25137901",
+                )
+                .await
             {
-                if let Err(why) = msg
-                    .channel_id
-                    .say(
-                        &ctx.http,
-                        "https://tenor.com/view/everybody-wants-to-be-my-gif-25137901",
-                    )
-                    .await
-                {
-                    eprintln!("Error sending message: {:?}", why);
-                }
+                eprintln!("Error sending message: {:?}", why);
             }
         }
 
@@ -109,6 +109,10 @@ impl EventHandler for Handler {
     async fn ready(&self, _: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
     }
+}
+
+fn string_ends_with_any(s: &str, suffixes: &[&str]) -> bool {
+    return suffixes.iter().any(|&suffix| s.ends_with(suffix));
 }
 
 #[tokio::main]
