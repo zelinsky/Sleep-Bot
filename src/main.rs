@@ -38,7 +38,7 @@ impl EventHandler for Handler {
                 .channel_id
                 .say(
                     &ctx.http,
-                    "https://tenor.com/view/everybody-wants-to-be-my-gif-25137901",
+                    "https://tenor.com/view/everybody-wants-to-be-my-enemy-gif-25993625",
                 )
                 .await
             {
